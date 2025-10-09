@@ -3,8 +3,6 @@ name: 🔴 Economic Circuit Breaker
 # Reference: ai-course-content-generator economic-circuit-breaker.yml
 
 on:
-  schedule:
-    - cron: '0 * * * *'  # 1時間ごとにコスト監視
   workflow_dispatch:
     inputs:
       force_check:

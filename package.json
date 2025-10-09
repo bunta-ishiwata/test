@@ -1,0 +1,47 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "description": "Autonomous development powered by Agentic OS",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "dashboard": "tsx src/dashboard/server.ts",
+    "rewrite": "tsx src/cli.ts rewrite",
+    "rewrite:all": "tsx src/cli.ts rewrite --all",
+    "rewrite:stats": "tsx src/cli.ts stats",
+    "scheduler": "tsx src/scheduler.ts"
+  },
+  "keywords": [
+    "agentic-os",
+    "autonomous"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.65.0",
+    "@prisma/client": "^6.17.0",
+    "@slack/web-api": "^7.11.0",
+    "chart.js": "^4.4.1",
+    "commander": "^14.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "googleapis": "^161.0.0",
+    "node-cron": "^4.2.1",
+    "prisma": "^6.17.0",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "eslint": "^8.54.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

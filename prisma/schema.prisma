@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"  // 開発用にSQLiteを使用（本番ではpostgresqlに変更）
+  url      = "file:./dev.db"
+}
+
+// 記事テーブル
+model Article {
+  id              Int      @id @default(autoincrement())
+  url             String   @unique
+  title           String
+  content         String
+  keywords        String
+  currentRanking  Int?
+  clicks          Int      @default(0)
+  impressions     Int      @default(0)
+  ctr             Float?
+  publishedAt     DateTime
+  lastUpdatedAt   DateTime?
+  lastRewrittenAt DateTime?
+  rewriteCount    Int      @default(0)
+  cvCount         Int      @default(0)
+  createdAt       DateTime @default(now())
+  
+  rewriteHistory  RewriteHistory[]
+  @@index([currentRanking])
+  @@index([lastRewrittenAt])
+}
+
+// 社内情報テーブル
+model CompanyInfo {
+  id             Int      @id @default(autoincrement())
+  category       String
+  title          String
+  content        String
+  isConfidential Boolean  @default(false)
+  isPublic       Boolean  @default(false)
+  source         String?
+  tags           String
+  embeddings     String?  // ベクトル埋め込み（JSON形式で保存）
+  createdAt      DateTime @default(now())
+  
+  @@index([category])
+  @@index([isPublic])
+}
+
+// リライト履歴テーブル
+model RewriteHistory {
+  id            Int      @id @default(autoincrement())
+  articleId     Int
+  beforeTitle   String
+  afterTitle    String
+  beforeContent String
+  afterContent  String
+  addedFaq      String?
+  internalLinks String
+  qualityScore  Int?
+  rewrittenBy   String
+  rewrittenAt   DateTime @default(now())
+  
+  article       Article  @relation(fields: [articleId], references: [id])
+  @@index([articleId])
+}
+
+// FAQテンプレートテーブル
+model FaqTemplate {
+  id          Int      @id @default(autoincrement())
+  keyword     String
+  question    String
+  answer      String
+  usageCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+  
+  @@index([keyword])
+}
+
+// リライトタスクキュー
+model RewriteTask {
+  id          Int      @id @default(autoincrement())
+  articleId   Int
+  status      String   @default("pending") // pending, processing, completed, failed
+  priority    Int      @default(5)
+  retryCount  Int      @default(0)
+  error       String?
+  scheduledAt DateTime
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  
+  @@index([status])
+  @@index([scheduledAt])
+}

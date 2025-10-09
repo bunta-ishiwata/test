@@ -1,0 +1,48 @@
+name: Article Rewrite Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      articleIds:
+        description: '特定記事IDのリライト（カンマ区切り）'
+        required: false
+        type: string
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  rewrite-articles:
+    if: contains(github.event.issue.labels.*.name, 'agent:rewrite') || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run RewriteAgent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+          SLACK_DESIGN_CHANNEL: '#design-requests'
+        run: |
+          npx tsx .claude/agents/RewriteAgent.ts --execute
+          
+      - name: Update Dashboard
+        run: |
+          npx tsx scripts/update-dashboard.ts --type rewrite
+          
+      - name: Send completion notification
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: '✅ リライト完了：${{ env.REWRITE_COUNT }}記事'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}

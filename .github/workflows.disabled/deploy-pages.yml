@@ -8,8 +8,6 @@ on:
     paths:
       - 'docs/**'
       - '.github/workflows/deploy-pages.yml'
-  schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
   workflow_dispatch:  # Manual trigger
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

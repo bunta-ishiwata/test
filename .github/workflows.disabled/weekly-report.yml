@@ -4,9 +4,6 @@ name: 📊 Generate Weekly Report
 # Issue #5 Phase A: Data Persistence Layer
 
 on:
-  schedule:
-    # Run every Monday at 9:00 AM UTC (6:00 PM JST)
-    - cron: '0 9 * * 1'
   workflow_dispatch:
 
 permissions:
